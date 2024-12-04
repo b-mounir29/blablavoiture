@@ -22,26 +22,6 @@ class AlterTableUser extends Migration
                 'null' => true,
             ],
 
-            'id_card' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
-                'null' => true,
-            ],
-
-            'id_licence'=> [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
-                'null' => true,
-            ],
-
-            'id_avatar'=> [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
-                'null' => true,
-            ],
 
             'cagnotte'=> [
                 'type' => 'INT',

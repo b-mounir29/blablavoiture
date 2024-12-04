@@ -7,7 +7,7 @@
     "class": "main-menu-accueil"
   },
   "produits": {
-    "title": "Options",
+    "title": "Gestion",
     "url": "/user",
     "perm": "none",
     "icon": "<i class=\"nav-icon fa-solid fa-gear\"></i>",
@@ -24,5 +24,25 @@
         "icon": "<i class=\"nav-icon fa-solid fa-user-gear\"></i>"
       }
     }
+      },
+
+
+      "car": {
+        "title": "Car",
+        "url": "/admin/car",
+        "icon": "<i class=\"nav-icon fa-solid fas fa-car-alt\t\"></i>",
+        "class": "",
+        "subs": {
+          "Marque": {
+            "title": "Marque",
+            "url": "/admin/marque",
+            "icon": "<i class=\"nav-icon fa-solid fa-copyright\"></i>"
+          },
+          "Model": {
+            "title": "Model",
+            "url": "/admin/car",
+            "icon": "<i class=\"nav-icon fa-solid fa-car-on\"></i>"
+          }
+        }
+      }
   }
-}

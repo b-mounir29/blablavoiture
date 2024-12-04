@@ -12,11 +12,13 @@
                             <i class="fa-solid fa-xl fa-toggle-on text-success"></i>
                         </a>
                     <?php
-                    } else { ?>
+                    } else {
+                        if(isset($utilisateur)) { ?>
                         <a title="Activer un utilisateur"href="<?= base_url('admin/user/activate/') . $utilisateur['id']; ?>">
                             <i class="fa-solid fa-toggle-off fa-xl text-danger"></i>
                         </a>
-                    <?php
+                        <?php
+                    }
                     }
                     ?>
                 </div>
@@ -28,7 +30,7 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="onglet-tab" data-bs-toggle="tab"
                                     data-bs-target="#onglet" type="button" role="tab" aria-controls="onglet"
-                                    aria-selected="false">ONGLET</button>
+                                    aria-selected="false">Voiture</button>
                         </li>
                     </ul>
 
@@ -41,12 +43,31 @@
                             </div>
                             <div class="mb-3">
                                 <label for="mail" class="form-label">E-mail</label>
-                                <input type="text" class="form-control" id="mail" placeholder="mail" value="<?= isset($utilisateur) ? $utilisateur['email'] : "" ?>" <?= isset($utilisateur) ? "readonly" : "" ?> >
+                                <input type="text" class="form-control" id="mail" placeholder="mail" value="<?= isset($utilisateur) ? $utilisateur['email'] : ""; ?>"  name="email">
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Mot de passe</label>
                                 <input type="password" class="form-control" id="password" placeholder="password" value="" name="password">
                             </div>
+
+                            <div class="mb-3">
+                                <label for="family_name" class="form-label">Family name</label>
+                                <input type="text" class="form-control" id="family_name" placeholder="nom de famille" value="" name="family_name">
+                            </div>
+
+
+                              <div class="mb-3">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="text" class="form-control" id="phone" placeholder="numero de telephone" value="" name="phone">
+                            </div>
+
+
+                              <div class="mb-3">
+                                <label for="password" class="form-label">Cagnotte</label>
+                                <input type="text" class="form-control" id="cagnotte" placeholder="cagnotte" value="" name="cagnotte">
+                            </div>
+
+
                             <div class="mb-3">
                                 <label for="id_permission" class="form-label">Rôle</label>
                                 <select class="form-select" id="id_permission" name="id_permission">
@@ -70,6 +91,17 @@
                                 </div>
 
                                 <input class="form-control" type="file" name="profile_image" id="image">
+                            </div>
+
+                            <div class="mb-3 d-flex align-items-center">
+                                <label for="image" class="form-label me-2">Permis </label>
+                                <input class="form-control" type="file" name="permis_image" id="permis">
+
+                            </div>
+                            <div class="mb-3 d-flex align-items-center">
+                                <label for="image" class="form-label me-2">Identité</label>
+                                <input class="form-control" type="file" name="card_image" id="permis">
+
                             </div>
                         </div>
 

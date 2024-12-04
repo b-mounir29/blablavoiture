@@ -12,6 +12,9 @@
                 <th>Username</th>
                 <th>Mail</th>
                 <th>Rôle</th>
+                <th>Nom de famille</th>
+                <th>Phone</th>
+                <th>Cagnotte</th>
                 <th>Modifier</th>
                 <th>Actif</th>
             </tr>
@@ -55,6 +58,9 @@
                     {"data": "username"},
                     {"data": "email"},
                     {"data": "permission_name"},
+                    {"data": "family_name"},
+                    {"data": "phone"},
+                    {"data": "cagnotte"},
                     {
                         data : 'id',
                         sortable : false,
