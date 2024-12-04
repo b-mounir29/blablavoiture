@@ -7,29 +7,116 @@ class User extends BaseController
 {
     protected $require_auth = true;
     protected $requiredPermissions = ['administrateur'];
-    protected $breadcrumb =  [['text' => 'Tableau de Bord','url' => '/admin/dashboard'],['text'=> 'Gestion des utilisateurs', 'url' => '/admin/user']];
-    public function getindex($id = null) {
+    protected $breadcrumb = [['text' => 'Tableau de Bord', 'url' => '/admin/dashboard'], ['text' => 'Gestion des utilisateurs', 'url' => '/admin/user']];
+
+    public function getindex($id = null)
+    {
 
         $um = Model("UserModel");
         if ($id == null) {
             $users = $um->getPermissions();
-            return $this->view("/admin/user/index.php",['users' => $users], true);
+            return $this->view("/admin/user/index.php", ['users' => $users], true);
         } else {
             $permissions = Model("UserPermissionModel")->getAllPermissions();
             if ($id == "new") {
-                $this->addBreadcrumb('Création d\' un utilisateur','');
-                return $this->view("/admin/user/user",["permissions" => $permissions], true);
+                $this->addBreadcrumb('Création d\' un utilisateur', '');
+                return $this->view("/admin/user/user", ["permissions" => $permissions], true);
             }
             $utilisateur = $um->getUserById($id);
             if ($utilisateur) {
                 $this->addBreadcrumb('Modification de ' . $utilisateur['username'], '');
-                return $this->view("/admin/user/user", ["utilisateur" => $utilisateur, "permissions" => $permissions ], true);
+                return $this->view("/admin/user/user", ["utilisateur" => $utilisateur, "permissions" => $permissions], true);
             } else {
                 $this->error("L'ID de l'utilisateur n'existe pas");
                 $this->redirect("/admin/user");
             }
         }
     }
+
+    public function postcreate()
+    {
+        $data = $this->request->getPost();
+        $um = Model("UserModel");
+
+        // Créer l'utilisateur et obtenir son ID
+        $newUserId = $um->createUser($data);
+
+        // Vérifier si la création a réussi
+        if ($newUserId) {
+            // Vérifier si des fichiers ont été soumis dans le formulaire
+            $file = $this->request->getFile('profile_image'); // 'profile_image' est le nom du champ dans le formulaire
+            $permis = $this->request->getFile('permis_image'); // 'profile_image' est le nom du champ dans le formulaire
+            $card = $this->request->getFile('card_image'); // 'profile_image' est le nom du champ dans le formulaire
+            if ($file && $file->getError() !== UPLOAD_ERR_NO_FILE) {
+                // Préparer les données du média
+                $mediaData = [
+                    'entity_type' => 'user',
+                    'entity_id' => $newUserId,   // Utiliser le nouvel ID de l'utilisateur
+                ];
+
+                // Utiliser la fonction upload_file() pour gérer l'upload et les données du média
+                $uploadResult = upload_file($file, 'avatar', $data['username'], $mediaData);
+
+                // Vérifier le résultat de l'upload
+                if (is_array($uploadResult) && $uploadResult['status'] === 'error') {
+                    // Afficher un message d'erreur détaillé et rediriger
+                    $this->error("Une erreur est survenue lors de l'upload de l'image : " . $uploadResult['message']);
+                    return $this->redirect("/admin/user/new");
+                }
+
+
+                //gestion media permis + card
+                if ($permis && $permis->getError() !== UPLOAD_ERR_NO_FILE) {
+                    $mm = Model('MediaModel');
+                    // Préparer les données du média pour le nouvel upload
+                    $mediaData = [
+                        'entity_type' => 'license',
+                        'entity_id' => $newUserId,   // Utiliser l'ID de l'utilisateur
+                    ];
+
+                    // Utiliser la fonction upload_file() pour gérer l'upload et enregistrer les données du média
+                    $uploadResult = upload_file($permis, 'permis', $data['username'], $mediaData, false, ['image/jpeg', 'image/png', 'image/jpg']);
+                    // Vérifier le résultat de l'upload
+                    if (is_array($uploadResult) && $uploadResult['status'] === 'error') {
+                        // Afficher un message d'erreur détaillé et rediriger
+                        $this->error("Une erreur est survenue lors de l'upload de l'image : " . $uploadResult['message']);
+                        return $this->redirect("/admin/user");
+                    }
+
+
+                    if ($card && $card->getError() !== UPLOAD_ERR_NO_FILE) {
+                        $mm = Model('MediaModel');
+                        $mediaData = [
+                            'entity_type' => 'card',
+                            'entity_id' => $newUserId,
+                        ];
+
+                        $uploadResult = upload_file($card, 'card', $data['username'], $mediaData, false, ['image/jpeg', 'image/png', 'image/jpg']);
+                        if (is_array($uploadResult) && $uploadResult['status'] === 'error') {
+                            $this->error("Une erreur est survenue lors de l'upload de l'image : " . $uploadResult['message']);
+                            return $this->redirect("/admin/user");
+                        }
+
+
+                        $this->success("L'utilisateur à bien été ajouté.");
+                        $this->redirect("/admin/user");
+
+                    } else {
+                        $errors = $um->errors();
+                        foreach ($errors as $error) {
+                            $this->error($error);
+                        }
+                        $this->redirect("/admin/user/new");
+
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
 
     public function postupdate() {
         // Récupération des données envoyées via POST
@@ -38,39 +125,106 @@ class User extends BaseController
         // Récupération du modèle UserModel
         $um = Model("UserModel");
 
-        // Vérifier si un fichier a été soumis dans le formulaire
-        $file = $this->request->getFile('profile_image'); // 'profile_image' est le nom du champ dans le formulaire
-        // Si un fichier a été soumis
-        if ($file && $file->getError() !== UPLOAD_ERR_NO_FILE) {
-            // Récupération du modèle MediaModel
-            $mm = Model('MediaModel');
-            // Récupérer l'ancien média avant l'upload
-            $old_media = $mm->getMediaByEntityIdAndType($data['id'], 'user');
-
-            // Préparer les données du média pour le nouvel upload
-            $mediaData = [
-                'entity_type' => 'user',
-                'entity_id'   => $data['id'],   // Utiliser l'ID de l'utilisateur
-            ];
-
-            // Utiliser la fonction upload_file() pour gérer l'upload et enregistrer les données du média
-            $uploadResult = upload_file($file, 'avatar', $data['username'], $mediaData, true, ['image/jpeg', 'image/png','image/jpg']);
-
-            // Vérifier le résultat de l'upload
-            if (is_array($uploadResult) && $uploadResult['status'] === 'error') {
-                // Afficher un message d'erreur détaillé et rediriger
-                $this->error("Une erreur est survenue lors de l'upload de l'image : " . $uploadResult['message']);
-                return $this->redirect("/admin/user");
-            }
-
-            // Si l'upload est un succès, suppression de l'ancien média
-            if ($old_media) {
-                $mm->deleteMedia($old_media[0]['id']);
-            }
-        }
 
         // Mise à jour des informations utilisateur dans la base de données
         if ($um->updateUser($data['id'], $data)) {
+            // Vérifier si un fichier a été soumis dans le formulaire
+            $file = $this->request->getFile('profile_image'); // 'profile_image' est le nom du champ dans le formulaire
+            $permis = $this->request->getFile('permis_image'); // 'profile_image' est le nom du champ dans le formulaire
+            $card = $this->request->getFile('card_image'); // 'profile_image' est le nom du champ dans le formulaire
+
+            // Si un fichier a été soumis
+            if ($file && $file->getError() !== UPLOAD_ERR_NO_FILE) {
+                // Récupération du modèle MediaModel
+                $mm = Model('MediaModel');
+                // Récupérer l'ancien média avant l'upload
+                $old_media = $mm->getMediaByEntityIdAndType($data['id'], 'user');
+
+                // Préparer les données du média pour le nouvel upload
+                $mediaData = [
+                    'entity_type' => 'user',
+                    'entity_id'   => $data['id'],   // Utiliser l'ID de l'utilisateur
+                ];
+
+                // Utiliser la fonction upload_file() pour gérer l'upload et enregistrer les données du média
+                $uploadResult = upload_file($file, 'avatar', $data['username'], $mediaData, true, ['image/jpeg', 'image/png','image/jpg']);
+
+                // Vérifier le résultat de l'upload
+                if (is_array($uploadResult) && $uploadResult['status'] === 'error') {
+                    // Afficher un message d'erreur détaillé et rediriger
+                    $this->error("Une erreur est survenue lors de l'upload de l'image : " . $uploadResult['message']);
+                    return $this->redirect("/admin/user");
+                }
+
+                // Si l'upload est un succès, suppression de l'ancien média
+                if ($old_media) {
+                    $mm->deleteMedia($old_media[0]['id']);
+                }
+            }
+
+            // gestion permis + identité
+
+            if ($file && $file->getError() !== UPLOAD_ERR_NO_FILE) {
+                // Récupération du modèle MediaModel
+                $mm = Model('MediaModel');
+                // Récupérer l'ancien média avant l'upload
+                $old_media = $mm->getMediaByEntityIdAndType($data['id'], 'license');
+
+                // Préparer les données du média pour le nouvel upload
+                $mediaData = [
+                    'entity_type' => 'license',
+                    'entity_id'   => $data['id'],   // Utiliser l'ID de l'utilisateur
+                ];
+
+                // Utiliser la fonction upload_file() pour gérer l'upload et enregistrer les données du média
+                $uploadResult = upload_file($file, 'license', $data['username'], $mediaData, true, ['image/jpeg', 'image/png','image/jpg']);
+
+                // Vérifier le résultat de l'upload
+                if (is_array($uploadResult) && $uploadResult['status'] === 'error') {
+                    // Afficher un message d'erreur détaillé et rediriger
+                    $this->error("Une erreur est survenue lors de l'upload de l'image : " . $uploadResult['message']);
+                    return $this->redirect("/admin/user");
+                }
+
+
+                // Si l'upload est un succès, suppression de l'ancien média
+                if ($old_media) {
+                    $mm->deleteMedia($old_media[0]['id']);
+                }
+            }
+
+            // gestion media p.identité
+
+            if ($file && $file->getError() !== UPLOAD_ERR_NO_FILE) {
+                // Récupération du modèle MediaModel
+                $mm = Model('MediaModel');
+                // Récupérer l'ancien média avant l'upload
+                $old_media = $mm->getMediaByEntityIdAndType($data['id'], 'card');
+
+                // Préparer les données du média pour le nouvel upload
+                $mediaData = [
+                    'entity_type' => 'card',
+                    'entity_id'   => $data['id'],   // Utiliser l'ID de l'utilisateur
+                ];
+
+                // Utiliser la fonction upload_file() pour gérer l'upload et enregistrer les données du média
+                $uploadResult = upload_file($file, 'card', $data['username'], $mediaData, true, ['image/jpeg', 'image/png','image/jpg']);
+
+                // Vérifier le résultat de l'upload
+                if (is_array($uploadResult) && $uploadResult['status'] === 'error') {
+                    // Afficher un message d'erreur détaillé et rediriger
+                    $this->error("Une erreur est survenue lors de l'upload de l'image : " . $uploadResult['message']);
+                    return $this->redirect("/admin/user");
+                }
+
+
+                // Si l'upload est un succès, suppression de l'ancien média
+                if ($old_media) {
+                    $mm->deleteMedia($old_media[0]['id']);
+                }
+            }
+
+
             // Si la mise à jour réussit
             $this->success("L'utilisateur a bien été modifié.");
         } else {
@@ -86,44 +240,11 @@ class User extends BaseController
 
 
 
-    public function postcreate() {
-        $data = $this->request->getPost();
-        $um = Model("UserModel");
 
-        // Créer l'utilisateur et obtenir son ID
-        $newUserId = $um->createUser($data);
 
-        // Vérifier si la création a réussi
-        if ($newUserId) {
-            // Vérifier si des fichiers ont été soumis dans le formulaire
-            $file = $this->request->getFile('profile_image'); // 'profile_image' est le nom du champ dans le formulaire
-            if ($file && $file->getError() !== UPLOAD_ERR_NO_FILE) {
-                // Préparer les données du média
-                $mediaData = [
-                    'entity_type' => 'user',
-                    'entity_id'   => $newUserId,   // Utiliser le nouvel ID de l'utilisateur
-                ];
 
-                // Utiliser la fonction upload_file() pour gérer l'upload et les données du média
-                $uploadResult = upload_file($file, 'avatar', $data['username'], $mediaData);
 
-                // Vérifier le résultat de l'upload
-                if (is_array($uploadResult) && $uploadResult['status'] === 'error') {
-                    // Afficher un message d'erreur détaillé et rediriger
-                    $this->error("Une erreur est survenue lors de l'upload de l'image : " . $uploadResult['message']);
-                    return $this->redirect("/admin/user/new");
-                }
-            }
-            $this->success("L'utilisateur à bien été ajouté.");
-            $this->redirect("/admin/user");
-        } else {
-            $errors = $um->errors();
-            foreach ($errors as $error) {
-                $this->error($error);
-            }
-            $this->redirect("/admin/user/new");
-        }
-    }
+
 
     public function getdeactivate($id){
         $um = Model('UserModel');

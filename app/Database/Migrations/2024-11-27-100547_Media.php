@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class TableMedia extends Migration
+class Media extends Migration
 {
     public function up()
     {
@@ -25,9 +25,9 @@ class TableMedia extends Migration
             ],
             'entity_type' => [
                 'type' => 'ENUM',
-                'constraint' => ['licence','card','avatar'],
+                'constraint' => ['user','license','card'],
+                'default' => 'user',
             ],
-
             'created_at' => [
                 'type'       => 'DATETIME',
                 'null'       => true,
