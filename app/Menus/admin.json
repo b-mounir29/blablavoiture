@@ -29,19 +29,29 @@
 
       "car": {
         "title": "Car",
-        "url": "/admin/car",
+        "url": "/car",
         "icon": "<i class=\"nav-icon fa-solid fas fa-car-alt\t\"></i>",
         "class": "",
         "subs": {
+          "Voiture": {
+            "title": "Voiture",
+            "url": "/admin/car",
+            "icon":"<i class=\"nav-icon fa-solid fa-magnifying-glass\"></i>"
+          },
           "Marque": {
             "title": "Marque",
-            "url": "/admin/marque",
+            "url": "/admin/car/brand",
             "icon": "<i class=\"nav-icon fa-solid fa-copyright\"></i>"
           },
           "Model": {
             "title": "Model",
-            "url": "/admin/car",
+            "url": "/admin/car/model",
             "icon": "<i class=\"nav-icon fa-solid fa-car-on\"></i>"
+          },
+          "Color": {
+            "title": "Color",
+            "url": "/admin/car/color",
+            "icon":"<i class=\"nav-icon fa-solid fa-paintbrush\"></i>"
           }
         }
       }

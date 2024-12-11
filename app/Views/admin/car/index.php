@@ -7,16 +7,13 @@
         <table id="tableUsers" class="table table-hover">
             <thead>
             <tr>
-                <th>ID</th>
-                <th>Marque</th>
+                <th>Id voiture</th>
+                <th>User</th>
                 <th>Model</th>
                 <th>Color</th>
-                <th>Rôle</th>
-                <th>Nom de famille</th>
-                <th>Phone</th>
-                <th>Cagnotte</th>
-                <th>Modifier</th>
-                <th>Actif</th>
+                <th>Created_at</th>
+                <th>Updated_at</th>
+                <th>Deleted_at</th>
             </tr>
             </thead>
             <tbody>
