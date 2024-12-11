@@ -1,5 +1,5 @@
 /*!
-* Color mode toggler for CoreUI's docs (https://coreui.io/)
+* ColorModel mode toggler for CoreUI's docs (https://coreui.io/)
 * Copyright (c) 2024 creativeLabs Łukasz Holeczek
 * Licensed under the Creative Commons Attribution 3.0 Unported License.
 */
