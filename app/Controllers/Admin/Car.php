@@ -10,12 +10,49 @@ class Car extends BaseController
     protected $title = "car";
     protected $require_auth = true;
     protected $requiredPermissions = ['administrateur'];
-    public function getindex()
+
+                                // Gestion Table Car
+    public function getindex($id=null)
     {
-        return $this->view('admin/car/index', [], true);
+        $cars= model('CarModel')->getAllcar();
+        return $this->view('admin/car/index', ['cars'=>$cars], true);
     }
 
-        // Gestion des modèles de voitures :
+    //envoi vers la page de création
+    public function getcar($id=null) {
+        $users = model('UserModel')->getAllUsers();
+        $models = model('ModelModel')->getAllModel();
+        $colors = model('ColorModel')->getAllColor();
+        return $this->view('admin/car/car', ['users' =>$users,'models'=>$models,'colors'=>$colors],true);
+    }
+
+    public function postcreatecar() {
+        $data = $this->request->getPost();
+        $ibm = model('CarModel');
+        if ($ibm->insert($data)) {
+            $this->success('voiture ajoutée');
+            $this->redirect('admin/car/car');
+        } else {
+            $this->error('ajout non effectué');
+            $this->redirect('admin/car');
+        }
+    }
+        public function getdeletecar($id) {
+            $ibm = model('CarModel');
+            if ($ibm->deletecar($id)) {
+                $this->success('voiture supprimée');
+            } else {
+                $this->error('suppression échouée');
+            }
+            $this->redirect('/admin/car');
+        }
+
+
+        public function updatecar() {
+
+    }
+
+                                // Gestion des modèles de voitures :
                 //1-getmodel pour recuperer les models de voiture et les envoyer vers la vue
                 //2- foreach des CarBrand  dans la vue model
     public function getmodel($id=null)

@@ -12,7 +12,7 @@
         <form action="<?= base_url('/admin/car/createmodel'); ?>" method="POST">
             <div class="card">
                 <div class="card-header">
-                    <h5>Ajouter un model</h5>
+                    <h5>Veuillez remplir les champs</h5>
                 </div>
                 <div class="card-body">
                     <label class="form-label">Nom du model</label>
@@ -23,7 +23,7 @@
                         <?php foreach ($marques as $marque) { ?>
                             <option value="<?= $marque['id']; ?>">
                                 <?=$marque['name']; ?>
-                        </option>
+                            </option>
                         <?php } ?>
 
 
