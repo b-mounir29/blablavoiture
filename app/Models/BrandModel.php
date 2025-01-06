@@ -26,6 +26,9 @@ class BrandModel extends Model
        return $this->insert($data);
     }
 
+    public function getBrand($id) {
+        return $this->find($id);
+    }
 
         //2- suppression marque
     public function deleteBrand($id) {

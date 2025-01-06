@@ -18,6 +18,9 @@ class ModelModel extends Model
         return $this->findAll();
     }
 
+    public function getModel($id) {
+        return $this->find($id);
+    }
 
     //2- create nouveau model -- enregistrer data dans bbd
     public function insertModel($data) {

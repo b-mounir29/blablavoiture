@@ -22,11 +22,18 @@ protected$useSoftDeletes = false;
         return $this->insert($data);
 }
 
+public function getColor($id) {
+        return $this->find($id);
+}
+
         //suppression colors
     public function deleteColor($id) {
         return $this->delete($id);
     }
 
+    public function updateColor($id, $data) {
+        return $this->update($id, $data);
+    }
 
 
 

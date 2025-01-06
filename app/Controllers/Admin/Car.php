@@ -61,10 +61,13 @@ class Car extends BaseController
         if($id==null) {
             //2-récuperer la liste des voiture et les envoyer dans la vue "model"-- la variable qui stocke la liste des marques, déclarée dans la function getbrand(L34), pour le foreach dans l'ajout d'un modèl
             $marques = model('BrandModel')->getAllBrand();
+
             return $this->view("admin/car/model", ['models' => $model, 'marques' => $marques], true); // variable marques  pour le foreach, à récupérer dans la view pour le foreach
         }
         if ($id) {
-            return $this->view('admin/car/edit/model', ['models'=>$model],true);
+            $mom= model('App\Models\ModelModel');
+            $models=$mom->getModel($id);
+            return $this->view('admin/car/edit/model', ['models'=>$model,'model'=>$models],true);
         }
     }
 
@@ -92,8 +95,8 @@ class Car extends BaseController
 
     public function postupdatemodel() {
         $data = $this->request->getPost();
-        $ibm = Model('ModelModel');
-        if ($ibm->update($data['id'],$data)) {
+        $mm = Model('ModelModel');
+        if ($mm->update($data['id'],$data)) {
             $this->success('Model modifié');
         } else {
             $this->error('Model non modifié');
@@ -127,7 +130,9 @@ class Car extends BaseController
             return $this->view("admin/car/brand", ['marques'=>$marques], true);
         }
         if($id) {
-            return $this->view('admin/car/edit/brand',['marques'=>$marques], true);
+            $bm = model('BrandModel');
+            $brand=$bm->getBrand($id);
+            return $this->view('admin/car/edit/brand',['marques'=>$marques,'brand'=>$brand], true);
         }
     }
                 //2 - ajouter une marque
@@ -179,11 +184,15 @@ class Car extends BaseController
     public function getcolor($id=null) {
         $colors = model('ColorModel')->getAllColor();
         if($id==null) {
+
             return $this->view('admin/car/color',['colors' =>$colors],true);
         }
 
         if ($id) {
-            return $this->view('admin/car/edit/color', ['colors' => $colors], true);
+            //si j'ai un id, j'affiche la couleur qui correspond dans ma vue updatecolor
+            $cm = model('ColorModel');
+            $color=$cm->getColor($id);
+            return $this->view('admin/car/edit/color', ['color' => $color,'couleurs' => $colors], true);
         }
     }
 
@@ -206,16 +215,20 @@ class Car extends BaseController
     }
 
         //3- update couleur
-    public function postupdatecolor() {
-    $data = $this->request->getPost();
-    $ibm = model('ColorModel');
-    if ($ibm->update($data['id'],$data)) {
-        $this->success('La marque a bien été modifiée');
-    } else {
-    $this->error('Erreur de modification');
+    public function postupdatecolor()
+    {
+        $data = $this->request->getPost();
+        $cm = model('ColorModel');
+        if ($cm->updateColor($data['id'],$data)) {
+            $this->success('couleur modifiée');
+            $this->redirect('/admin/car/color');
+        } else {
+            // Échec de la mise à jour
+        $this->error('modification non effectué');
+        $this->redirect('admin/car/edit/color');
+        }
     }
-    $this->redirect('/admin/car/color');
-    }
+
 
         //4- delete couleur
     public function getdeleteColor($id) {
