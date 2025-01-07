@@ -1,39 +1,24 @@
 {
   "items": {
-    "title" : "Objets",
-    "url" : "/item",
-    "icon": "<i class=\"nav-icon fa-solid fa-boxes-stacked\"></i>",
-    "subs" : {
-      "item": {
-        "title" : "Objets",
-        "url" : "/item",
-        "icon": "<i class=\"nav-icon fa-solid fa-box-open\"></i>"
+    "title": "Trajet",
+    "url": "/trajet",
+    "icon": "<i class=\"fa-solid fa-car\"></i>",
+    "subs": {
+      "Consulter": {
+        "title": "Consulter",
+        "url": "/trajet",
+        "icon": "<i class=\"fa-regular fa-eye\"></i>"
+      },
+      "Publier": {
+        "title": "Publier",
+        "url": "/trajet",
+        "icon": "<i class=\"fa-solid fa-pencil\"></i>"
       }
     }
   },
-  "collection": {
-    "title" : "Collection",
-    "url" : "/collection",
-    "icon": "<i class=\"nav-icon fa-solid fa-boxes-stacked\"></i>",
-    "subs" : {
-      "item": {
-        "title" : "Collection",
-        "url" : "/collection",
-        "icon": "<i class=\"nav-icon fa-solid fa-box-open\"></i>"
-      }
-    }
-  },
-  "message" : {
-    "title" : "Messagerie",
-    "url" : "/chat",
-    "icon" : "<i class=\"nav-icon fa-solid fa-envelopes-bulk\"></i>",
-    "subs" : {
-      "chat" : {
-        "title": "Chat",
-        "url" : "/chat",
-        "icon" : "<i></i>"
-      }
-    }
+  "compte": {
+    "title": "Compte",
+    "url": "/",
+    "icon": "<i class=\"fa-regular fa-address-card\"></i>"
   }
 }
-
