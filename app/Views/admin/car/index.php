@@ -13,9 +13,6 @@
                 <th>Color</th>
                 <th>Model</th>
                 <th>Created_at</th>
-                <th>Updated_at</th>
-                <th>Deleted_at</th>
-                <th>Modifer</th>
                 <th>Supprimer</th>
             </tr>
             </thead>
@@ -45,22 +42,14 @@
                 {"data":"colorname"},
                 {"data":"modelcarname"},
                 {"data":"created_at"},
-                {"data":"updated_at"},
-                {"data":"deleted_at"},
+
+
 
                 {
                     data: 'id',
                     sortable: false,
                     render: function (data) {
-                        return `<a href="${baseUrl}admin/car/${data}"><i class="fa-solid fa-pencil"></i></a>`;
-                    }
-
-                },
-                {
-                    data: 'id',
-                    sortable: false,
-                    render: function (data) {
-                        return `<a href="${baseUrl}admin/car/deletecar/${data}"><i class="fa-solid fa-pencil"></i></a>`;
+                        return `<a href="${baseUrl}admin/car/deletecar/${data}"><i class="fa-solid fa-trash"></i></a>`;
                     }
                 }
 
