@@ -10,7 +10,7 @@ class UserModelTest extends CIUnitTestCase
 {
     use DatabaseTestTrait;
     protected $migrate = true;
-    protected $seed = 'App\Database\Seeds\DatabaseSeeder';
+   // protected $seed = 'App\Database\Seeds\DatabaseSeeder';
     protected function setUp(): void
     {
         parent::setUp();

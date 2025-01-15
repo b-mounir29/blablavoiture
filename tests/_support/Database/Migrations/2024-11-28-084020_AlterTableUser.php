@@ -33,23 +33,15 @@ class AlterTableUser extends Migration
         ]);
 
 
-        $this->forge->addForeignKey('id_card', 'media', 'entity_id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('id_license', 'media', 'entity_id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('id_avatar', 'media', 'entity_id', 'CASCADE', 'CASCADE');
     }
 
     public function down()
     {
-        // si j'ai besoin de  supprimer les clés étrangères
-
-        $this->forge->dropForeignKey('media', 'media_id_card_foreign');
-        $this->forge->dropForeignKey('media', 'media_id_license_foreign');
-        $this->forge->dropForeignKey('media', 'media_id_avatar_foreign');
 
         // si j'ai besoin de  supprimer les colonnes
 
-        $this->forge->dropColumn('media', 'id_card');
-        $this->forge->dropColumn('media', 'id_license');
-        $this->forge->dropColumn('media', 'id_avatar');
+        $this->forge->dropColumn('user', 'family_name');
+        $this->forge->dropColumn('user', 'phone');
+        $this->forge->dropColumn('user', 'cagnotte');
     }
 }
