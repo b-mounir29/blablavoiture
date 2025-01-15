@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class carbrand extends Migration
+class CarBrand extends Migration
 {
     public function up()
     {
@@ -18,7 +18,8 @@ class carbrand extends Migration
 
             'name' => [
                 'type'=>'VARCHAR',
-                'constraint'=>'100',
+                'constraint'=>'255',
+                'null'=>false,
             ],
 
         ]);
