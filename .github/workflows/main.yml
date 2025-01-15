@@ -7,7 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,10 +22,12 @@ jobs:
           echo "CI_ENVIRONMENT=production" >> .env
           echo "ENV_TOKEN=${{ secrets.ENV_TOKEN }}" >> .env
           cat .env
+
       - name: Modify App.php
         run: |
           sed -i "s|\$baseURL = '.*';|\$baseURL = '${{ secrets.BASE_URL }}';|g" app/Config/App.php
           cat app/Config/App.php
+
       - name: Create .htaccess for root directory
         run: |
           echo '<IfModule mod_rewrite.c>' > .htaccess
@@ -37,6 +39,7 @@ jobs:
           echo '    Require all denied' >> .htaccess
           echo '    Satisfy All' >> .htaccess
           echo '</FilesMatch>' >> .htaccess
+
       - name: Create .htaccess for public directory
         run: |
           echo '<IfModule mod_rewrite.c>' > public/.htaccess
@@ -69,6 +72,7 @@ jobs:
           echo '<IfModule !mod_rewrite.c>' >> public/.htaccess
           echo '    ErrorDocument 404 index.php' >> public/.htaccess
           echo '</IfModule>' >> public/.htaccess
+
       - name: Generate version file
         run: |
           VERSION=$(git describe --tags --abbrev=0)
@@ -77,6 +81,7 @@ jobs:
           TIMESTAMP=$(date +'%Y-%m-%d %H:%M:%S')
           echo "{ \"version\": \"$VERSION\", \"branch\": \"$BRANCH\", \"commit\": \"$COMMIT\", \"timestamp\": \"$TIMESTAMP\" }" > version.json
           cat version.json  # Affiche le contenu de version.json pour vérifier
+
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
